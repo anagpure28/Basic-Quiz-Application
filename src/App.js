@@ -10,6 +10,7 @@ function App() {
   const [score, setScore] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [success, setSuccess] = useState(true);
+  const [failure, setFailure] = useState(true);
 
   useEffect(() => {
     async function fetchQuizData() {
@@ -26,8 +27,6 @@ function App() {
     fetchQuizData();
   }, []);
 
-  // console.log(quizData.length,"length")
-
   const question = quizData[currentQuestion];
 
   const checkAnswer = (optionIndex) => {
@@ -37,6 +36,7 @@ function App() {
     } else {
       setSelectedOption(optionIndex);
     }
+    setFailure(false)
   };
 
   const nextQuestion = () => {
@@ -45,6 +45,7 @@ function App() {
       setSelectedOption(null);
       setShowAnswer(false);
       setSuccess(true);
+      setFailure(true)
     }
   };
 
@@ -68,11 +69,10 @@ function App() {
   return (
     <div className="App">
       <h1>Quiz App</h1>
-      {currentQuestion < quizData.length - 1 ? (
-        <div>
+        {<div>
           {quizData.length === 0 ? (
-            <p>Loading...</p>
-          ) : (
+            <h1>Loading...</h1>
+          ) : ( currentQuestion < quizData.length - 1 &&
             <div className="question-container">
               <h2>Score: {score}</h2>
               <div className="question">
@@ -118,7 +118,7 @@ function App() {
                   </div>
                 </>
               ) : (
-                <button className="answer" onClick={hideAnswerForQuestion}>
+                <button className="answer" disabled={failure} onClick={hideAnswerForQuestion}>
                   Show Answer
                 </button>
               )}
@@ -127,15 +127,15 @@ function App() {
               </button>
             </div>
           )}
-        </div>
-      ) : (
-        <div className="EndQuiz">
+        </div>}
+
+        {currentQuestion === quizData.length - 1 ? <div className="EndQuiz">
           <h2>Score: {score} / {quizData.length}</h2>
           <button className="reset" onClick={resetQuiz}>
             Reset Quiz
           </button>
-        </div>
-      )}
+        </div> : ""}
+      
     </div>
   );
 }
