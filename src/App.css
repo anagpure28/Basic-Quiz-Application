@@ -2,37 +2,54 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1{
+  margin-top: 50px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.bgGreen {
+  background-color: green;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.bgRed {
+  background-color: red;
+  color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.options{
+  width: 45%;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+  margin: auto;
+}
+
+button{
+  height: 50px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.next, .answer, .reset{
+  padding: 10px;
+  height: 40px;
+  margin: 20px 10px;
+}
+
+span{
+  color: green;
+}
+
+.EndQuiz{
+  width: 25%;
+  height: 30vh;
+  border: 1px solid #000000;
+  margin: 50px auto;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.EndQuiz > h2{
+  margin-top: 50px;
 }

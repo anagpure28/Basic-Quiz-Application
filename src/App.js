@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
+import "./Style.css";
 
 function App() {
   const [quizData, setQuizData] = useState([]);
@@ -8,29 +9,34 @@ function App() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [success, setSuccess] = useState(true);
 
   useEffect(() => {
     async function fetchQuizData() {
       try {
-        const response = await axios.get('https://dbioz2ek0e.execute-api.ap-south-1.amazonaws.com/mockapi/get-quiz');
+        const response = await axios.get(
+          "https://dbioz2ek0e.execute-api.ap-south-1.amazonaws.com/mockapi/get-quiz"
+        );
         setQuizData(response.data.data);
       } catch (error) {
-        console.error('Error fetching quiz data:', error);
+        console.error("Error fetching quiz data:", error);
       }
     }
 
     fetchQuizData();
   }, []);
 
+  // console.log(quizData.length,"length")
+
   const question = quizData[currentQuestion];
 
   const checkAnswer = (optionIndex) => {
-      if (optionIndex === question.correctOptionIndex) {
-        setSelectedOption(optionIndex);
-        setScore(score + 1);
-      } else {
-        setSelectedOption(optionIndex);
-      }
+    if (optionIndex === question.correctOptionIndex) {
+      setSelectedOption(optionIndex);
+      setScore(score + 1);
+    } else {
+      setSelectedOption(optionIndex);
+    }
   };
 
   const nextQuestion = () => {
@@ -38,51 +44,96 @@ function App() {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedOption(null);
       setShowAnswer(false);
+      setSuccess(true);
     }
   };
 
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setSelectedOption(null);
+    setScore(0);
+    setShowAnswer(false);
+  };
+
   const showAnswerForQuestion = () => {
+    setSuccess(true);
     setShowAnswer(true);
   };
 
+  const hideAnswerForQuestion = () => {
+    setSuccess(false);
+    setShowAnswer(false);
+  };
+
   return (
-    <div className="quiz-app">
+    <div className="App">
       <h1>Quiz App</h1>
-      {quizData.length === 0 ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="question-container">
-          <p>Score: {score}</p>
-          <div className="question">
-            <p>{question.question}</p>
-          </div>
-          <div className="options">
-            {question.options.map((option, index)=> (
+      {currentQuestion < quizData.length - 1 ? (
+        <div>
+          {quizData.length === 0 ? (
+            <p>Loading...</p>
+          ) : (
+            <div className="question-container">
+              <h2>Score: {score}</h2>
+              <div className="question">
+                <h3>{question.question}</h3>
+              </div>
+              <div className="options">
+                {question.options?.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => checkAnswer(index)}
+                    className={
+                      selectedOption === index
+                        ? index === question.correctOptionIndex
+                          ? "bgGreen"
+                          : "bgRed"
+                        : ""
+                    }
+                    disabled={selectedOption !== null}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
               <button
-              key={index}
-              onClick={() => checkAnswer(index)}
-              className={
-                selectedOption === index
-                  ? index === question.correctOptionIndex
-                    ? 'bgGreen'
-                    : 'bgRed'
-                  : ''
-              }
-              disabled={selectedOption !== null}
-            >
-              {option}
-            </button>
-            ))} 
-          </div>
-          <button onClick={nextQuestion}>Next Question</button>
-          <button onClick={showAnswerForQuestion}>Show Answer</button>
-          <div className="answer">
-            {showAnswer && (
-              <p>
-                Correct Answer: {question.options[question.correctOptionIndex]}
-              </p>
-            )}
-          </div>
+                className="next"
+                disabled={currentQuestion == quizData.length - 1}
+                onClick={nextQuestion}
+              >
+                Next Question
+              </button>
+              {success === false ? (
+                <>
+                  <button className="answer" onClick={showAnswerForQuestion}>
+                    Hide Answer
+                  </button>
+                  <div className="showAnswer">
+                    <p>
+                      <span>
+                        <h3>Correct Answer</h3>
+                      </span>{" "}
+                      {question.options[question.correctOptionIndex]}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <button className="answer" onClick={hideAnswerForQuestion}>
+                  Show Answer
+                </button>
+              )}
+              <button className="reset" onClick={resetQuiz}>
+                Reset Quiz
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="EndQuiz">
+          <h2>Score: {score} / {quizData.length}</h2>
+          <button className="reset" onClick={resetQuiz}>
+            Reset Quiz
+          </button>
         </div>
       )}
     </div>
