@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  min-height: 100vh; /* so it covers the whole viewport */
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
 }
 
 h1{
